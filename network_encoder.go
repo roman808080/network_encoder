@@ -10,7 +10,7 @@ type INetworkWriter interface {
 }
 
 type INetworkReader interface {
-	Write(source any) error
+	Read(source any) error
 }
 
 type INetworkEncoder interface {
@@ -42,4 +42,19 @@ func NewGobReader(r io.Reader) *GobReader {
 
 func (reader *GobReader) Read(destination any) error {
 	return reader.dec.Decode(destination)
+}
+
+type GobNetworkEncoder struct {
+}
+
+func NewGobNetworkEncoder() GobNetworkEncoder {
+	return GobNetworkEncoder{}
+}
+
+func (*GobNetworkEncoder) GetNetworkWriter(w io.Writer) INetworkWriter {
+	return NewGobWriter(w)
+}
+
+func (*GobNetworkEncoder) GetNetworkReader(r io.Reader) INetworkReader {
+	return NewGobReader(r)
 }
